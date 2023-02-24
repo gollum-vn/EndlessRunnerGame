@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +10,22 @@ public class GameManager : MonoBehaviour
     public Projectile projectile;
     public PlayerController player;
     public Obstacle[] obstaclePrefab;
+    private MainUIHandler mainUIHandler;
+    
+    [SerializeField] float _obstacleSpeed = 5f;
+    public float ObstacleSpeed
+    {
+        get { return _obstacleSpeed; }
+        set { if(value <= 20f) _obstacleSpeed = value; }
+    }
+    public bool isGameActive;
+    public string playerName;
+    public float score;
+
+    private float spawnPosX = 30;
+    private float spawnPosY = 0.78f;
+    private float spawnPosZ;
+    private float spawnRate;
 
     private Vector3 playerSpawnPos = new Vector3(1, 0, 4);
     private float _shootRate = 0.5f;
@@ -21,69 +34,37 @@ public class GameManager : MonoBehaviour
         get { return _shootRate; }
         set { _shootRate = value; }
     }
-    [SerializeField] float _obstacleSpeed = 5f;
-    public float ObstacleSpeed
-    {
-        get { return _obstacleSpeed; }
-        set { if(value <= 15f) _obstacleSpeed = value; }
-    }
-    public bool isGameActive;
-    
-    private float spawnPosX = 30;
-    private float spawnPosY = 0.78f;
-    private float spawnPosZ;
-    private float spawnRate;
-
-    private float score;
-    public string playerName;
-
-    public Button startButton;
-    public Button restartButton;
-    public Button exitButton;
-
-    public TextMeshProUGUI gameOverText;
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI yourScoreText;
-
-    private void Start()
-    {
-        Reset();
-    }
-    private void Update()
-    {
-        ScoreUpdate();
-    }
-    public void StartGame()
+    private void Awake()
     {
         isGameActive = true;
-        titleScreen.SetActive(false);
-        scoreText.gameObject.SetActive(true);
-        exitButton.gameObject.SetActive(false);
         StartCoroutine(SpawnObstacle());
         StartCoroutine(SpawnProjectile());
     }
+    private void Start()
+    {
+        mainUIHandler = GameObject.Find("UI").GetComponent<MainUIHandler>();
+        Reset();
+        if(MenuManager.Instance != null)
+        {
+            playerName = MenuManager.Instance.PlayerName;
+        }
+    }
     public void GameOver()
     {
-        gameOverText.gameObject.SetActive(true);
-        yourScoreText.gameObject.SetActive(true);
-        Debug.Log("Game Over!");
         isGameActive = false;
-        Invoke("ActiveRestartButton", 5f);
-    }
-    void ActiveRestartButton()
-    {
-        restartButton.gameObject.SetActive(true);
-        exitButton.gameObject.SetActive(true);
+        mainUIHandler.SetActive();
     }
     public void Restart()
     {
         isGameActive = true;
-        gameOverText.gameObject.SetActive(false);
-        restartButton.gameObject.SetActive(false);
-        yourScoreText.gameObject.SetActive(false);
+        mainUIHandler.SetInactive();
         StartCoroutine(SpawnObstacle());
         StartCoroutine(SpawnProjectile());
         Reset();
+    }
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
     IEnumerator SpawnProjectile()
     {
@@ -133,26 +114,7 @@ public class GameManager : MonoBehaviour
         projectile.damage = 10f;
         score = 0;
     }
-    void ScoreUpdate()
-    {
-        if (isGameActive)
-        {
-            score += Time.time * ObstacleSpeed/600;
-            scoreText.text = "Score:" + (int)score;
-            yourScoreText.text = playerName +": "+ (int)score;
-        }
-    }
-    public void ReadInputField(string input)
-    {
-        playerName = input;
-        Debug.Log(playerName);
-    }
-    public void Exit()
-    {
-#if UNITY_EDITOR
-        EditorApplication.ExitPlaymode();
-#else
-        Application.Quit(); // original code to quit Unity player
-#endif
-    }
+    
+    
+    
 }
