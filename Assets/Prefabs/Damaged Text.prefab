@@ -84,7 +84,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &2093856118397105831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damagedText: {fileID: 8280634366482556770}
-  damaged: 35
+  damaged: 10
 --- !u!1 &6725141461153371592
 GameObject:
   m_ObjectHideFlags: 0

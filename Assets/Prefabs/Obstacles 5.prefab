@@ -111,6 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd2c00ec2112c9049afd0bf2804591a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damagedCanvas: {fileID: 6297660495064851530, guid: 1c20eb3144ebfe24d9a7e575bfd05a07, type: 3}
   healthText: {fileID: 6155628672228738649}
   health: 0
   currentHealth: 0
